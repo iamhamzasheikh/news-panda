@@ -269,8 +269,27 @@ export class News extends Component {
     super()
     this.state =  {
       articles: this.articles,
-      loading: false
+      loading: true,
+      page: 1
     }
+  }
+
+    async componentDidMount(){
+      let url = 'https://newsapi.org/v2/everything?q=bitcoin&apiKey=09e4cbbb39054ae399e765b1e8d14f15&page=1'
+      let data = await fetch(url)
+      let parsedData = await data.json()
+      console.log(parsedData)
+    }
+
+  handleNextClick = () =>{
+    console.log("Next Clicked")
+    this.setState({
+      page: this.state.page+1,
+    })
+  }
+  handlePreviousClick = () =>{
+    console.log("previous Clicked")
+    
   }
 
   render() {
@@ -281,11 +300,16 @@ export class News extends Component {
       <div className="row">
       {this.state.articles.map((element)=>{
         return  ( <div className='col-md-4' key={element.url}>
-        <Newsitem title={element.title.slice(0, 45)} description={element.description ? element.description.slice(0, 75) : ""}
-        // description={element.description} // how can i set description character is only 75
-        imageUrl={element.urlToImage}   
+        <Newsitem title={element.title ? element.title.slice(0, 16): "Title not found"}
+         description={element.description ? element.description.slice(0, 55) : "Description not found"}
+        imageUrl={element.urlToImage} alt={element.title} 
         newsurl = {element.url} /> </div>)
       })}
+      </div>
+
+      <div className='d-flex justify-content-between'>
+      <button disabled={this.state.page<=1} type="button" class="btn btn-dark" onClick={this.handlePreviousClick} >&larr; Previous</button>
+      <button type="button" className="btn btn-dark"onClick={this.handleNextClick} >Next &rarr;</button>
       </div>
       </div>
       </>
@@ -294,3 +318,6 @@ export class News extends Component {
 }
 
 export default News
+
+
+// find the error in this component
